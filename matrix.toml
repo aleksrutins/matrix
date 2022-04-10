@@ -1,0 +1,14 @@
+projectName = "matrix"
+configPath = "test-config"
+
+[configRegex]
+find = "RobotConfig CURRENT = .*;"
+replace = "RobotConfig CURRENT = $cfg;"
+
+[configurations]
+fullRobot = "FULL_ROBOT"
+programmingBoard = "PROGRAMMING_BOARD"
+
+[targets]
+debug = ["go", "build", "-v", "main.go"]
+release = ["go", "build", "main.go"]
