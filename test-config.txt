@@ -1,1 +1,3 @@
-RobotConfig CURRENT = PROGRAMMING_BOARD;
+class Whatever {
+    RobotConfig CURRENT = FULL_ROBOT;
+}

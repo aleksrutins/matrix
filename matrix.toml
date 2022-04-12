@@ -1,9 +1,9 @@
 projectName = "matrix"
-configPath = "test-config"
+configPath = "test-config.txt"
 
 [configRegex]
 find = "RobotConfig CURRENT = .*;"
-replace = "RobotConfig CURRENT = $cfg;"
+replace = "RobotConfig CURRENT = $(config);"
 
 [configurations]
 fullRobot = "FULL_ROBOT"

@@ -6,7 +6,9 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"regexp"
 
 	"github.com/aleksrutins/matrix/config"
 	"github.com/aleksrutins/matrix/log"
@@ -32,7 +34,23 @@ to quickly create a Cobra application.`,
 			log.Error(err.Error())
 			return
 		}
+		r, err := regexp.Compile(cfg.ConfigRegex.Find)
+		if err != nil {
+			log.Error(err.Error())
+			return
+		}
+		rCfgVar, err := regexp.Compile(`\$\(config\)`)
+		if err != nil {
+			log.Error(err.Error())
+		}
+		configContent, err := ioutil.ReadFile(cfg.ConfigPath)
+		if err != nil {
+			log.Error(err.Error())
+			return
+		}
 		for toRun := range cfg.IterateAll() {
+			newContent := r.ReplaceAllString(string(configContent), rCfgVar.ReplaceAllString(cfg.ConfigRegex.Replace, toRun.Configuration.Value))
+			ioutil.WriteFile(cfg.ConfigPath, []byte(newContent), 777)
 			stdout, err := log.Build(toRun.Configuration.Name, toRun.Command.Name, toRun.Command.Value)
 			if err != nil {
 				log.Error(err.Error())
