@@ -15,6 +15,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	rCfgVar    = regexp.MustCompile(`\$\(config\)`)
+	rTargetVar = regexp.MustCompile(`\$\(target\)`)
+)
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "matrix",
@@ -39,22 +44,24 @@ to quickly create a Cobra application.`,
 			log.Error(err.Error())
 			return
 		}
-		rCfgVar, err := regexp.Compile(`\$\(config\)`)
-		if err != nil {
-			log.Error(err.Error())
-		}
 		configContent, err := ioutil.ReadFile(cfg.ConfigPath)
 		if err != nil {
 			log.Error(err.Error())
 			return
 		}
 		for toRun := range cfg.IterateAll() {
-			newContent := r.ReplaceAllString(string(configContent), rCfgVar.ReplaceAllString(cfg.ConfigRegex.Replace, toRun.Configuration.Value))
+			newContent := r.ReplaceAllString(string(configContent), replaceVars(cfg.ConfigRegex.Replace, cfg, toRun))
 			ioutil.WriteFile(cfg.ConfigPath, []byte(newContent), 777)
 			stdout, err := log.Build(toRun.Configuration.Name, toRun.Command.Name, toRun.Command.Value)
 			if err != nil {
 				log.Error(err.Error())
 				fmt.Println(stdout)
+			}
+			for _, file := range cfg.Move {
+				err = os.Rename(replaceVars(file.Old, cfg, toRun), replaceVars(file.New, cfg, toRun))
+				if err != nil {
+					log.Error(err.Error())
+				}
 			}
 		}
 	},
@@ -79,4 +86,8 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func replaceVars(str string, cfg config.MatrixConfig, toRun config.Cell) string {
+	return rTargetVar.ReplaceAllString(rCfgVar.ReplaceAllString(str, toRun.Configuration.Value), toRun.Command.Name)
 }
