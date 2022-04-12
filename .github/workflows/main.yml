@@ -27,6 +27,6 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build
-        uses: aleksrurins/matrix@v1
+        uses: aleksrutins/matrix@v1
         with:
           version: latest
