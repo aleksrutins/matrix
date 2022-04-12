@@ -1,0 +1,16 @@
+name: Matrix
+description: Run multiple builds using Matrix
+inputs:
+  version:
+    description: "Version of Matrix to use"
+    required: true
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-go@v3
+      with:
+        go-version: '>=1.17.0'
+    - run: go install -v github.com/aleksrutins/matrix
+      shell: bash
+    - run: matrix
+      shell: bash
