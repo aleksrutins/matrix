@@ -4,6 +4,7 @@ inputs:
   version:
     description: "Version of Matrix to use"
     required: true
+    default: latest
 runs:
   using: composite
   steps:
