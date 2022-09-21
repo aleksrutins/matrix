@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
@@ -37,17 +36,17 @@ to quickly create a Cobra application.`,
 		cfg, err := config.Read("matrix.toml")
 		if err != nil {
 			log.Error(err.Error())
-			return
+			os.Exit(1)
 		}
 		r, err := regexp.Compile(cfg.ConfigRegex.Find)
 		if err != nil {
 			log.Error(err.Error())
-			return
+			os.Exit(1)
 		}
 		configContent, err := ioutil.ReadFile(cfg.ConfigPath)
 		if err != nil {
 			log.Error(err.Error())
-			return
+			os.Exit(1)
 		}
 		for toRun := range cfg.IterateAll() {
 			newContent := r.ReplaceAllString(string(configContent), replaceVars(cfg.ConfigRegex.Replace, cfg, toRun))
