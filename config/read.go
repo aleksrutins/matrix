@@ -1,13 +1,13 @@
 package config
 
 import (
-	"io/ioutil"
+	"os"
 
 	"github.com/pelletier/go-toml/v2"
 )
 
 func Read(path string) (MatrixConfig, error) {
-	content, err := ioutil.ReadFile(path)
+	content, err := os.ReadFile(path)
 	if err != nil {
 		return MatrixConfig{}, err
 	}

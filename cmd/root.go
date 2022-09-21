@@ -4,8 +4,6 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-	"io/ioutil"
 	"os"
 	"regexp"
 
@@ -43,18 +41,17 @@ to quickly create a Cobra application.`,
 			log.Error(err.Error())
 			os.Exit(1)
 		}
-		configContent, err := ioutil.ReadFile(cfg.ConfigPath)
+		configContent, err := os.ReadFile(cfg.ConfigPath)
 		if err != nil {
 			log.Error(err.Error())
 			os.Exit(1)
 		}
 		for toRun := range cfg.IterateAll() {
 			newContent := r.ReplaceAllString(string(configContent), replaceVars(cfg.ConfigRegex.Replace, cfg, toRun))
-			ioutil.WriteFile(cfg.ConfigPath, []byte(newContent), 777)
-			stdout, err := log.Build(toRun.Configuration.Name, toRun.Command.Name, toRun.Command.Value)
+			os.WriteFile(cfg.ConfigPath, []byte(newContent), 0777)
+			err := log.Build(toRun.Configuration.Name, toRun.Command.Name, toRun.Command.Value)
 			if err != nil {
 				log.Error(err.Error())
-				fmt.Println(stdout)
 			}
 			for _, file := range cfg.Move {
 				err = os.Rename(replaceVars(file.Old, cfg, toRun), replaceVars(file.New, cfg, toRun))
