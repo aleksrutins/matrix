@@ -1,0 +1,14 @@
+configPath = "example/config.js"
+move = []
+
+[configRegex]
+find = "var config = .*"
+replace = "var config = $(config)"
+
+[configurations]
+Hello = "hello"
+World = "world"
+
+[targets]
+debug = ["cat", "example/config.js"]
+release = ["cat", "example/config.js"]
