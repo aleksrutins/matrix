@@ -11,15 +11,13 @@ async function run(): Promise<void> {
   const currentConfig = (await fs.readFile(config.configPath)).toString()
   const regex = new RegExp(config.configRegex.find, 'g')
   for (const cfg in config.configurations) {
-    const replacement = config.configRegex.replace.replace(
-      /\$\(config\)/g,
-      config.configurations[cfg]
-    )
-    const newConfig = currentConfig.replace(regex, replacement)
-    await fs.writeFile(config.configPath, newConfig)
-
     core.info(cfg)
     for (const target in config.targets) {
+      const replacement = config.configRegex.replace
+        .replace(/\$\(config\)/g, config.configurations[cfg])
+        .replace(/\$\(target\)/g, target)
+      const newConfig = currentConfig.replace(regex, replacement)
+      await fs.writeFile(config.configPath, newConfig)
       core.startGroup(`Target ${target}`)
       childProcess.spawnSync(
         config.targets[target][0],
@@ -27,10 +25,16 @@ async function run(): Promise<void> {
         {stdio: 'inherit'}
       )
       core.endGroup()
-    }
-
-    for (const file of config.move) {
-      await fs.rename(file.from, file.to)
+      for (const file of config.move) {
+        await fs.rename(
+          file.from
+            .replace(/\$\(config\)/g, config.configurations[cfg])
+            .replace(/\$\(target\)/g, target),
+          file.to
+            .replace(/\$\(config\)/g, config.configurations[cfg])
+            .replace(/\$\(target\)/g, target)
+        )
+      }
     }
   }
 }
