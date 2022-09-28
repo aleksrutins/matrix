@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import * as TOML from '@ltd/j-toml'
+import TOML from '@ltd/j-toml'
 import * as fs from 'fs/promises'
 import {Config} from './config'
 import * as childProcess from 'child_process'

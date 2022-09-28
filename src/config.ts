@@ -1,5 +1,4 @@
 export type Config = {
-  projectName: string
   configPath: string
   move: {
     from: string
