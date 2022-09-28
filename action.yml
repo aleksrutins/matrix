@@ -7,5 +7,5 @@ inputs:
     description: "Path to your project's Matrix configuration; defaults to `matrix.toml`."
     default: 'matrix.toml'
 runs:
-  using: 'node18'
+  using: 'node16'
   main: 'dist/index.js'
