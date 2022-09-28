@@ -18,7 +18,7 @@ async function run(): Promise<void> {
     const newConfig = currentConfig.replace(regex, replacement)
     await fs.writeFile(config.configPath, newConfig)
 
-    core.startGroup(cfg)
+    core.info(cfg)
     for (const target in config.targets) {
       core.startGroup(`Target ${target}`)
       childProcess.spawnSync(
@@ -28,7 +28,6 @@ async function run(): Promise<void> {
       )
       core.endGroup()
     }
-    core.endGroup()
 
     for (const file of config.move) {
       await fs.rename(file.from, file.to)
