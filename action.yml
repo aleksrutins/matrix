@@ -1,17 +1,11 @@
-name: Matrix
-description: Run multiple builds using Matrix
+name: 'matrix'
+description: 'A tool for compile-time project configuration.'
+author: 'Aleks Rutins'
 inputs:
-  version:
-    description: "Version of Matrix to use"
-    required: true
-    default: latest
+  config:
+    required: false
+    description: "Path to your project's Matrix configuration; defaults to `matrix.toml`."
+    default: 'matrix.toml'
 runs:
-  using: composite
-  steps:
-    - uses: actions/setup-go@v3
-      with:
-        go-version: '>=1.17.0'
-    - run: go install -v github.com/aleksrutins/matrix@${{ inputs.version }}
-      shell: bash
-    - run: matrix
-      shell: bash
+  using: 'node18'
+  main: 'dist/index.js'
